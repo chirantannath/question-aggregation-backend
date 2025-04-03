@@ -73,7 +73,7 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variable files
-.env
+#.env
 .env.development.local
 .env.test.local
 .env.production.local
@@ -134,3 +134,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+#Added by Chirantan Nath
+package-lock.json
+#I am using Bruno for API testing.
+#bruno_api_testing/

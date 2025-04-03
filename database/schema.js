@@ -1,0 +1,91 @@
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  isAdmin: { type: Boolean, required: true, default: false },
+});
+export const User = mongoose.model("User", userSchema);
+
+const subjectSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true, unique: true },
+  description: { type: String, required: true, trim: true },
+});
+//Create text index on subject name for subject search
+subjectSchema.index({ name: "text", description: "text" });
+export const Subject = mongoose.model("Subject", subjectSchema);
+
+export const DIFFICULTY_LEVELS = ["EASY", "MEDIUM", "HARD"];
+const answerSchema = new mongoose.Schema({
+  //Custom key is required because answerSchema is a subdocument
+  //Key can be any integer you choose but must be unique WITHIN
+  //THE QUESTION (may repeat among questions). For the same reason
+  //we cannot declare unique: true here.
+  key: { type: mongoose.Schema.Types.Int32, required: true},
+  text: { type: String, required: true, trim: true},
+});
+const questionSchema = new mongoose.Schema({
+  question: { type: String, required: true, trim: true, unique: true },
+  description: {type: String, required: false, trim: true, default: ""},
+  subject: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Subject",
+    required: true,
+  },
+  answers: [answerSchema],
+  //Refers to subdocuments in answers array.
+  correctAnswerKey: { type: mongoose.Schema.Types.Int32, required: true },
+  correctAnswerExplanation: { type: String, required: false, default: "" },
+  uploader: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  difficulty: { type: String, required: true, enum: DIFFICULTY_LEVELS },
+  verified: { type: Boolean, required: true, default: false },
+});
+//Create text index on question and description fields for questionSchema
+questionSchema.index({ question: "text", description: "text" });
+export const Question = mongoose.model("Question", questionSchema);
+
+const upvoteSchema = new mongoose.Schema({
+  question: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Question",
+    required: true,
+  },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  //Upvote when true, DOWNvote when false, entire document should be deleted when none.
+  upvote: { type: Boolean, required: true },
+}, {
+  statics: {
+    async countNetVotes(question_id) {
+      const upvoteCount = await this.countDocuments({
+        question: question_id,
+        upvote: true,
+      }).exec();
+      const downvoteCount = await this.countDocuments({
+        question: question_id,
+        upvote: false,
+      }).exec();
+      return upvoteCount - downvoteCount;
+    }
+  }
+});
+export const Upvote = mongoose.model("Upvote", upvoteSchema);
+
+const quizSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true, trim: true },
+  questions: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Question", required: true },
+  ],
+  //Should be only for admin as of now.
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  isPublic: { type: Boolean, required: true, default: false },
+});
+export const Quiz = mongoose.model("Quiz", quizSchema);

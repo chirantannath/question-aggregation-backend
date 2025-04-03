@@ -1,0 +1,26 @@
+meta {
+  name: POST new question
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3500/question
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "question": "Consider a reaction where compound \"A\" decomposes into compounds \"B\" and \"C\" according to the following equilibrium:\n2A(g)↔B(g)+3C(g)\nAt a certain temperature, the equilibrium constant (K) for this reaction is 27.0. If the initial partial pressure of A is 2.0 atm, what is the partial pressure of B at equilibrium?",
+    "subject": "67ee9598b0fd9773dae26edb",
+    "answers": [
+      {"key": 1, "text": "0.5 atm"},
+      {"key": 2, "text": "1.0 atm"},
+      {"key": 3, "text": "1.5 atm"},
+      {"key": 4, "text": "2.0 atm"}
+    ],
+    "correctAnswerKey": 2,
+    "difficulty": "HARD"
+  }
+}

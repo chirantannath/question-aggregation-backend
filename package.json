@@ -1,0 +1,35 @@
+{
+  "name": "question-aggregation-backend",
+  "version": "1.0.0",
+  "description": "Question aggregation website backend",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "nodemon .",
+    "dev": "nodemon .",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chirantannath/question-aggregation-backend.git"
+  },
+  "author": "emergency.jasper@gmail.com",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/chirantannath/question-aggregation-backend/issues"
+  },
+  "homepage": "https://github.com/chirantannath/question-aggregation-backend#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-mongodb-session": "^5.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "fastest-levenshtein": "^1.0.16",
+    "mongoose": "^8.13.1"
+  }
+}

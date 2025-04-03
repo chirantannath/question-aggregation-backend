@@ -1,0 +1,18 @@
+meta {
+  name: POST new subject
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3500/subject
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Computer Science",
+    "description": "Computer science is the study of computation, information, and automation.Computer science spans theoretical disciplines (such as algorithms, theory of computation, and information theory) to applied disciplines (including the design and implementation of hardware and software)."
+  }
+}

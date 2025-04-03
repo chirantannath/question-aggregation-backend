@@ -1,0 +1,15 @@
+meta {
+  name: GET all questions
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3500/question
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~difficulty: HARD
+}

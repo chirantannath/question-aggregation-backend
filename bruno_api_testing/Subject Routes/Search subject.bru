@@ -1,0 +1,15 @@
+meta {
+  name: Search subject
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:3500/subject/search?q=mathematics
+  body: none
+  auth: inherit
+}
+
+params:query {
+  q: mathematics
+}
