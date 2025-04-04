@@ -1,0 +1,20 @@
+meta {
+  name: POST new quiz
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3500/quiz
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Test Quiz 1",
+    "questions": [
+      
+    ]
+  }
+}

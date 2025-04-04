@@ -77,6 +77,7 @@ export const Upvote = mongoose.model("Upvote", upvoteSchema);
 
 const quizSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true, trim: true },
+  //Only verified questions here
   questions: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Question", required: true },
   ],
@@ -88,4 +89,52 @@ const quizSchema = new mongoose.Schema({
   },
   isPublic: { type: Boolean, required: true, default: false },
 });
+//We should be able to search quizzes by name
+quizSchema.index({ name: "text" });
 export const Quiz = mongoose.model("Quiz", quizSchema);
+
+//Schema for a user attempting a quiz
+const attemptSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  //Only public quizzes
+  quiz: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz", required: true },
+  answers: [
+    {
+      question: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Question",
+        required: true,
+      },
+      answerKey: { type: mongoose.Schema.Types.Int32, required: true },
+    },
+  ]
+}, {
+  timestamps: true,
+  methods: {
+    async countCorrectAnswers() {
+      let count = 0;
+      for (let i = 0; i < this.answers.length; i++) {
+        const question = await Question.findById(this.answers[i].question);
+        if (this.answers[i].answerKey == question.correctAnswerKey)
+          count++;
+      }
+      return count;
+    },
+    async countIncorrectAnswers() {
+      let count = 0;
+      for (let i = 0; i < this.answers.length; i++) {
+        const question = await Question.findById(this.answers[i].question);
+        if (this.answers[i].answerKey != question.correctAnswerKey)
+          count++;
+      }
+      return count;
+    },
+    async countUnanswered() {
+      const allQuestions = (await Quiz.findById(this.quiz)
+        .select("questions")
+        .exec()).questions;
+      return allQuestions.length - this.answers.length;
+    }
+  }
+});
+export const Attempt = mongoose.model("Attempt", attemptSchema);
