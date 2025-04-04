@@ -18,4 +18,7 @@ router.use("/voting", voting_api);
 import quiz_api from "./quiz_api.js";
 router.use("/quiz", quiz_api);
 
+import attempt_api from "./attempt_api.js";
+router.use("/attempt", attempt_api);
+
 export default router;

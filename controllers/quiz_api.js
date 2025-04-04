@@ -7,6 +7,8 @@ import { userIsAdmin } from "../middleware/user_middleware.js";
 const router = express.Router();
 
 //Admin can create a quiz
+//Body {name: String, questions: [Question ID], isPublic?: Boolean}
+//questions array can be == [] but must be present
 router.post("/", userIsAdmin, async (req, res) => {
   if (!req.body) return res.sendStatus(400);
   const { name, questions, isPublic } = req.body;
@@ -86,9 +88,9 @@ router.put("/:id", userIsAdmin, async (req, res) => {
 
     quiz.questions = questions;
   }
-  quiz.isPublic = !!isPublic;
+  if("isPublic" in req.body) quiz.isPublic = !!isPublic;
   await quiz.save();
-  return res.sendStatus(200);
+  return res.json(quiz);
 });
 
 //Admin can delete a quiz
@@ -162,6 +164,17 @@ router.get("/search", async (req, res) => {
     .select("_id")
     .exec();
   return res.json(quizzes.map((quiz) => quiz._id));
+});
+
+//Get quiz given ID
+router.get("/:id", async (req, res) => {
+  if (!req.params) return res.sendStatus(400);
+  let queryObject = {_id: req.params.id};
+  if (!(req.session.user && req.session.user.isAdmin))
+    queryObject.isPublic = true;
+  const quiz = await Quiz.findOne(queryObject).exec();
+  if (!quiz) return res.sendStatus(404);
+  return res.json(quiz);
 });
 
 export default router;

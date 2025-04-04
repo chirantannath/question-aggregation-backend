@@ -1,0 +1,17 @@
+meta {
+  name: POST an answer to an attempt
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:3500/attempt/67efdb39303026b01b1fea93/answers/67eee8233540de84d3679b1f
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "answerKey": 2
+  }
+}

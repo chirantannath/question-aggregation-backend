@@ -60,6 +60,20 @@ const upvoteSchema = new mongoose.Schema({
   upvote: { type: Boolean, required: true },
 }, {
   statics: {
+    async countUpvotes(question_id) {
+      const upvoteCount = await this.countDocuments({
+        question: question_id,
+        upvote: true,
+      }).exec();
+      return upvoteCount;
+    },
+    async countDownvotes(question_id) {
+      const downvoteCount = await this.countDocuments({
+        question: question_id,
+        upvote: false,
+      }).exec();
+      return downvoteCount;
+    },
     async countNetVotes(question_id) {
       const upvoteCount = await this.countDocuments({
         question: question_id,
@@ -73,6 +87,7 @@ const upvoteSchema = new mongoose.Schema({
     }
   }
 });
+upvoteSchema.index({question: 1, user: 1}, {unique: true});
 export const Upvote = mongoose.model("Upvote", upvoteSchema);
 
 const quizSchema = new mongoose.Schema({
@@ -114,7 +129,8 @@ const attemptSchema = new mongoose.Schema({
     async countCorrectAnswers() {
       let count = 0;
       for (let i = 0; i < this.answers.length; i++) {
-        const question = await Question.findById(this.answers[i].question);
+        const question = await Question.findById(this.answers[i].question)
+        .select("correctAnswerKey").exec();
         if (this.answers[i].answerKey == question.correctAnswerKey)
           count++;
       }
@@ -123,7 +139,8 @@ const attemptSchema = new mongoose.Schema({
     async countIncorrectAnswers() {
       let count = 0;
       for (let i = 0; i < this.answers.length; i++) {
-        const question = await Question.findById(this.answers[i].question);
+        const question = await Question.findById(this.answers[i].question)
+        .select("correctAnswerKey").exec();
         if (this.answers[i].answerKey != question.correctAnswerKey)
           count++;
       }

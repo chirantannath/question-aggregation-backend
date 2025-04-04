@@ -1,0 +1,23 @@
+meta {
+  name: POST a new attempt at a quiz
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3500/attempt
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "quiz": "67efc8357c2eb3cb6e1e9c9e",
+    "answers": [
+      {
+        "question": "67eee8233540de84d3679b1f",
+        "answerKey": 4
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: GET attempts by me
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:3500/attempt
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~quiz_id: 67efc8357c2eb3cb6e1e9c9e
+}

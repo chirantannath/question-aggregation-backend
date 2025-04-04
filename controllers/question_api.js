@@ -159,11 +159,28 @@ router.get("/:id", async (req, res) => {
     ];
   
   console.log("Query", queryObject);
-  const question = await Question.findOne(queryObject)
+  let question = await Question.findOne(queryObject)
     //.populate("subject")
     //.populate("uploader")
     .exec();
   if (!question) return res.sendStatus(404);
+  question = question.toObject();
+  question.upvoteCount = await Upvote.countUpvotes(question._id);
+  question.downvoteCount = await Upvote.countDownvotes(question._id);
+  if(req.session.user) {
+    const upvote = await Upvote.findOne({
+      question: question._id,
+      user: req.session.user._id,
+    }).exec();
+    if (upvote) {
+      question.upvoted = upvote.upvote;
+      question.downvoted = !upvote.upvote;
+    } else {
+      question.upvoted = question.downvoted = false;
+    }
+  } else {
+    question.upvoted = question.downvoted = false;
+  }
 
   return res.json(question);
 });

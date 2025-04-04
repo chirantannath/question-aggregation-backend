@@ -1,0 +1,17 @@
+meta {
+  name: Update quiz
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:3500/quiz/67efc8357c2eb3cb6e1e9c9e
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "isPublic": true
+  }
+}

@@ -67,16 +67,10 @@ router.delete("/:question_id", userLoggedIn, async (req, res) => {
 //Returns {upvoteCount: Number, downvoteCount: Number}
 router.get("/:question_id", async (req, res) => {
   if (!req.params) return res.sendStatus(400);
-  const question = await Question.findById(req.params.question_id).exec();
+  const question = await Question.findById(req.params.question_id).select("_id").exec();
   if (!question) return res.sendStatus(404);
-  const upvoteCount = await Upvote.countDocuments({
-    question: question._id,
-    upvote: true,
-  }).exec();
-  const downvoteCount = await Upvote.countDocuments({
-    question: question._id,
-    upvote: false,
-  }).exec();
+  const upvoteCount = await Upvote.countUpvotes(question._id);
+  const downvoteCount = await Upvote.countDownvotes(question._id);
   return res.json({ upvoteCount, downvoteCount });
 });
 
