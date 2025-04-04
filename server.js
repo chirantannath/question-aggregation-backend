@@ -1,4 +1,5 @@
 (await import("dotenv")).default.config();
+//console.log(process.env.DATABASE_URI);
 (await import("mongoose")).default.connect(process.env.DATABASE_URI);
 import api from "./controllers/api.js";
 import express from "express";
