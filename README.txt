@@ -217,5 +217,5 @@ Requires JSON {answerKey: <answer key integer, Int32>}
 Delete an answer to a question in a quiz attempt (USER ACCESS)
 Address DELETE /attempt/<attempt id>/answers/<question id>
 
-Delete entire attempt
+Delete entire attempt (USER ACCESS)
 Address DELETE /attempt/<attempt id>
