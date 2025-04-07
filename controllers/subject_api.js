@@ -16,8 +16,8 @@ const router = express.Router();
 
 //Get ALL subject IDs
 router.get("/", async (_, res) => {
-  const subjects = await Subject.find().select("_id").exec();
-  return res.json(subjects.map((s) => s._id));
+  const subjects = await Subject.find().exec();
+  return res.json(subjects);
 });
 
 //Text search of subject on subject name and description

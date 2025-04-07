@@ -75,14 +75,8 @@ const upvoteSchema = new mongoose.Schema({
       return downvoteCount;
     },
     async countNetVotes(question_id) {
-      const upvoteCount = await this.countDocuments({
-        question: question_id,
-        upvote: true,
-      }).exec();
-      const downvoteCount = await this.countDocuments({
-        question: question_id,
-        upvote: false,
-      }).exec();
+      const upvoteCount = await this.countUpvotes(question_id);
+      const downvoteCount = await this.countDownvotes(question_id);
       return upvoteCount - downvoteCount;
     }
   }
