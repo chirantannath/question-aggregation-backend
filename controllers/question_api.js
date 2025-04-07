@@ -160,7 +160,7 @@ router.get("/:id", async (req, res) => {
   
   console.log("Query", queryObject);
   let question = await Question.findOne(queryObject)
-    //.populate("subject")
+    .populate("subject")
     //.populate("uploader")
     .exec();
   if (!question) return res.sendStatus(404);

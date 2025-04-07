@@ -27,6 +27,7 @@ const cors_whitelist = new Set([
   "http://localhost:5500",
   "http://localhost:3500",
   "http://localhost:4173",
+  "http://localhost:5173",
   "https://en.wikipedia.org",
 ]);
 const cors_options = {
