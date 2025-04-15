@@ -26,8 +26,9 @@ const answerSchema = new mongoose.Schema({
   text: { type: String, required: true, trim: true},
 });
 const questionSchema = new mongoose.Schema({
-  question: { type: String, required: true, trim: true, unique: true },
-  description: {type: String, required: false, trim: true, default: ""},
+  question: { type: String, required: true, trim: true },
+  description: {type: String, required: false, default: ""},
+  descriptionMIME: {type: String, required: false, default: "text/plain"},
   subject: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Subject",

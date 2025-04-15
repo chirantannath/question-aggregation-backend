@@ -10,6 +10,7 @@ import {
 } from "../database/schema.js";
 import { userIsAdmin, userLoggedIn } from "../middleware/user_middleware.js";
 import { distance as levenshteinDistance } from "fastest-levenshtein";
+import mime_db from "mime-db";
 
 const router = express.Router();
 
@@ -189,9 +190,10 @@ router.get("/:id", async (req, res) => {
 //NOTE: Testing required.
 router.post("/", userLoggedIn, async (req, res) => {
   if (!req.body) return res.sendStatus(400);
-  const {
+  let {
     question,
     description,
+    descriptionMIME,
     subject,
     answers,
     correctAnswerKey,
@@ -202,6 +204,10 @@ router.post("/", userLoggedIn, async (req, res) => {
     return res
       .status(400)
       .json("Question, subject, answers, correctAnswerKey and difficulty required");
+  if(!descriptionMIME) descriptionMIME = "text/plain";
+  else if(!(descriptionMIME in mime_db))
+    return res.status(400).json("Invalid descriptionMIME, must be a valid MIME type");
+  //NOTE: LaTeX MIME type is application/x-latex or application/x-tex
   if (!DIFFICULTY_LEVELS.includes(difficulty))
     return res
       .status(400)
@@ -230,6 +236,7 @@ router.post("/", userLoggedIn, async (req, res) => {
   const newQuestion = await Question.create({
     question,
     description,
+    descriptionMIME,
     subject: subjectExists._id,
     answers,
     correctAnswerKey,
@@ -247,6 +254,7 @@ router.put("/:id", userLoggedIn, async (req, res) => {
   if (!req.params) return res.sendStatus(400);
   let {
     description,
+    descriptionMIME,
     subject,
     answers,
     correctAnswerKey,
@@ -259,6 +267,14 @@ router.put("/:id", userLoggedIn, async (req, res) => {
   }).exec();
   if (!question) return res.sendStatus(404);
   if (description) question.description = description;
+  
+  if(descriptionMIME) {
+    if(!(descriptionMIME in mime_db))
+      return res.status(400).json("Invalid descriptionMIME, must be a valid MIME type");
+    //NOTE: LaTeX MIME type is application/x-latex or application/x-tex
+    question.descriptionMIME = descriptionMIME;
+  }
+  
   if (subject) {
     const subjectExists = await Subject.findById(subject).select("_id").exec();
     if (!subjectExists) return res.status(404).json("Subject does not exist");

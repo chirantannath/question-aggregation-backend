@@ -21,4 +21,7 @@ router.use("/quiz", quiz_api);
 import attempt_api from "./attempt_api.js";
 router.use("/attempt", attempt_api);
 
+import leaderboard_api from "./leaderboard_api.js";
+router.use("/leaderboard", leaderboard_api);
+
 export default router;
